@@ -1,0 +1,59 @@
+#!/bin/bash
+#IFS=$"\n"
+#line_num=`wc -l /alltime.txt`
+for i in {1..196};
+do
+	line=`sed -n "${i}"'p' /root/alltime.txt`
+	#echo ${line}
+	sleep 1s
+#	export IFS=$'\040\t\n'
+	systime=`echo ${line}|awk -F"|" '{print $1}'`
+	hwtime=`echo ${line}|awk -F"|" '{print $2}'`
+	bjtime=`echo ${line}|awk -F"|" '{print $3}'`
+	#echo ${systime}
+	#echo ${hwtime}
+	#echo ${bjtime}
+	#export IFS=$'\040\t\n'
+
+	systime_stamp=`date -d "${systime}" +%s`
+	#echo ${systime_stamp}
+	bjtime_stamp=`date -d "${bjtime}" +%s`
+	#echo ${bjtime_stamp}
+	hwtime_stamp=`date -d "${hwtime}" +%s`
+	#echo ${hwtime_stamp}
+#	let sys_bj_diff=$systime_stamp - $bjtime_stamp
+	#echo ${sys_bj_diff}
+	hw_bj_diff=`echo  $(($(date +%s -d "${hwtime}") - $(date +%s -d "${bjtime}")))`
+	#echo ${hw_bj_diff}
+	sys_hw_diff=`echo  $(($(date +%s -d "${systime}") - $(date +%s -d "${hwtime}")))`
+	#echo ${sys_hw_diff}
+	sys_bj_diff=`echo  $(($(date +%s -d "${systime}") - $(date +%s -d "${bjtime}")))`
+	declare -i sys_bj_diff_output
+	declare -i sys_bj_diff_output_hour
+	declare -i sys_bj_diff_output_min
+	declare -i sys_bj_diff_output_sec
+	sys_bj_diff_output_hour=`expr "${sys_bj_diff}" / 3600`
+	midd_num_of_sys_bj=`expr "${sys_bj_diff}" % 3600`
+	sys_bj_diff_output_min=`expr "${midd_num_of_sys_bj}"  /  60`
+	sys_bj_diff_output_sec=`expr "${midd_num_of_sys_bj}"  %  60`
+	#echo ${sys_bj_diff_output_hour}'h'${sys_bj_diff_output_min}'m'${sys_bj_diff_output_sec}'s'
+	declare -i hw_bj_diff_output
+	declare -i hw_bj_diff_output_hour
+	declare -i hw_bj_diff_output_min
+	declare -i hw_bj_diff_output_min
+	hw_bj_diff_output_hour=`expr "$hw_bj_diff" / 3600`
+	midd_num_of_hw_bj=`expr "${hw_bj_diff}" % 3600`
+	hw_bj_diff_output_min=`expr "${midd_num_of_hw_bj}" / 60`
+	hw_bj_diff_output_sec=`expr "${midd_num_of_hw_bj}" % 60`
+	#echo ${hw_bj_diff_output_hour}'h'${hw_bj_diff_output_min}'m'${hw_bj_diff_output_sec}'s'
+	declare -i sys_hw_diff_output
+        declare -i sys_hw_diff_output_hour
+        declare -i sys_hw_diff_output_min
+        declare -i sys_hw_diff_output_sec
+        sys_hw_diff_output_hour=`expr "${sys_hw_diff}" / 3600`
+        midd_num_of_sys_hw=`expr "${sys_hw_diff}" % 3600`
+        sys_hw_diff_output_min=`expr "${midd_num_of_sys_hw}"  /  60`
+        sys_hw_diff_output_sec=`expr "${midd_num_of_sys_hw}"  %  60`
+	echo -e "` echo ${sys_bj_diff_output_hour}'h'${sys_bj_diff_output_min}'m'${sys_bj_diff_output_sec}'s'`,     `echo ${hw_bj_diff_output_hour}'h'${hw_bj_diff_output_min}'m'${hw_bj_diff_output_sec}'s'`,      ` echo ${sys_hw_diff_output_hour}'h'${sys_hw_diff_output_min}'m'${sys_hw_diff_output_sec}'s'`"
+
+done
